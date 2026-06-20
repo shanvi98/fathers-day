@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Dad Wrapped</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;500;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: #07140C;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 12px;
+  }
+
+  .phone {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: 720px;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    background: #0F2E1F;
+  }
+
+  .progress-row {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    gap: 5px;
+    z-index: 20;
+  }
+
+  .progress-seg {
+    flex: 1;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.25);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #FAF3E3;
+    border-radius: 3px;
+  }
+
+  .progress-seg.done .progress-fill { width: 100%; }
+  .progress-seg.active .progress-fill { animation: fillbar 4.5s linear forwards; }
+
+  @keyframes fillbar { from { width: 0%; } to { width: 100%; } }
+
+  .tap-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 33%;
+    z-index: 15;
+  }
+  .tap-zone.left { left: 0; }
+  .tap-zone.right { right: 0; }
+
+  .deck {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 32px 60px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    overflow: hidden;
+  }
+
+  .card.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 18px;
+  }
+
+  .big-number {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 76px;
+    line-height: 0.95;
+    margin-bottom: 14px;
+    letter-spacing: -1px;
+  }
+
+  .stat-label {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+    max-width: 270px;
+  }
+
+  .sub-note {
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.7;
+    max-width: 260px;
+    line-height: 1.5;
+  }
+
+  .doodle {
+    position: absolute;
+    opacity: 0.18;
+  }
+
+  /* card themes */
+  .theme-1 { background: #0F2E1F; color: #FAF3E3; }
+  .theme-2 { background: #E8B84B; color: #3C2A0A; }
+  .theme-3 { background: #FF6B5B; color: #4A1208; }
+  .theme-4 { background: #17402A; color: #FAF3E3; }
+  .theme-5 { background: #FAF3E3; color: #0F2E1F; }
+  .theme-6 { background: #0F2E1F; color: #E8B84B; }
+  .theme-7 { background: #FF6B5B; color: #FAF3E3; }
+  .theme-final {
+    background: linear-gradient(135deg, #0F2E1F 0%, #1F5C3A 100%);
+    color: #FAF3E3;
+  }
+  .theme-8 { background: #FAF3E3; color: #0F2E1F; }
+  .theme-9 { background: #17402A; color: #FAF3E3; }
+  .theme-10 { background: #FF6B5B; color: #4A1208; }
+  .theme-11 { background: #E8B84B; color: #3C2A0A; }
+
+  .quote-mark {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 50px;
+    line-height: 1;
+    margin-bottom: 8px;
+    opacity: 0.5;
+  }
+
+  .quote-text {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .crown-wrap {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: rgba(250,243,227,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    border: 2px solid rgba(250,243,227,0.4);
+  }
+
+  .final-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 30px;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .final-sub {
+    font-size: 15px;
+    font-weight: 500;
+    opacity: 0.85;
+    max-width: 270px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .signature {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0.6;
+    text-transform: uppercase;
+    position: absolute;
+    bottom: 28px;
+  }
+
+  .swipe-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    z-index: 10;
+    letter-spacing: 0.5px;
+  }
+
+  .heart-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 18px;
+  }
+  .heart-row span { font-size: 18px; opacity: 0; }
+
+  .bg-shapes {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bg-shapes span {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.16;
+  }
+
+  .float-a { animation: floatA 9s ease-in-out infinite; }
+  .float-b { animation: floatB 11s ease-in-out infinite; }
+  .float-c { animation: floatC 7.5s ease-in-out infinite; }
+  .float-d { animation: floatA 13s ease-in-out infinite reverse; }
+
+  @keyframes floatA {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(14px,-22px) scale(1.08); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-18px,16px) scale(0.92); }
+  }
+  @keyframes floatC {
+    0%, 100% { transform: translate(0,0) rotate(0deg); }
+    50% { transform: translate(10px,12px) rotate(15deg); }
+  }
+
+  .card-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+    will-change: transform;
+  }
+
+  .card.active .anim-in {
+    animation: riseFade 0.65s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+
+  @keyframes riseFade {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card.active .eyebrow { animation-delay: 0.05s; }
+  .card.active .big-number,
+  .card.active .quote-text,
+  .card.active .final-title { animation-delay: 0.15s; }
+  .card.active .stat-label { animation-delay: 0.3s; }
+  .card.active .sub-note,
+  .card.active .final-sub { animation-delay: 0.45s; }
+  .card.active .heart-row { animation: riseFade 0.6s ease forwards; animation-delay: 0.6s; }
+  .card.active .heart-row span { opacity: 1; }
+  .card.active .crown-wrap { animation: popIn 0.55s cubic-bezier(.34,1.56,.64,1) forwards; }
+  .card.active .signature { animation: riseFade 0.6s ease forwards; animation-delay: 0.7s; }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.6); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .crown-wrap {
+    animation: pulseRing 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseRing {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(250,243,227,0.25); }
+    50% { box-shadow: 0 0 0 10px rgba(250,243,227,0); }
+  }
+
+  .marquee {
+    position: absolute;
+    top: 26px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index: 1;
+    opacity: 0.5;
+  }
+
+  .marquee-track {
+    display: inline-block;
+    padding-left: 100%;
+    animation: scrollLeft 14s linear infinite;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+  }
+
+  @keyframes scrollLeft {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+
+  .steam {
+    position: absolute;
+    width: 3px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.35);
+    animation: steamRise 3.2s ease-in-out infinite;
+  }
+
+  @keyframes steamRise {
+    0% { transform: translateY(0) scaleY(1); opacity: 0; }
+    20% { opacity: 0.5; }
+    80% { opacity: 0.3; }
+    100% { transform: translateY(-30px) scaleY(1.4); opacity: 0; }
+  }
+
+  .confetti-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    top: -20px;
+    opacity: 0;
+  }
+
+  .confetti-piece.burst {
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(760px) translateX(var(--drift, 0px)) rotate(var(--spin, 360deg)); opacity: 0; }
+  }
+
+  .star { animation: twinkle 2.2s ease-in-out infinite; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 0.8; transform: scale(1.15); }
+  }
+
+  .wobble { animation: wobble 5s ease-in-out infinite; }
+  @keyframes wobble {
+    0%, 100% { transform: rotate(-4deg) translateY(0); }
+    50% { transform: rotate(4deg) translateY(-8px); }
+  }
+
+  .spin-slow { animation: spinSlow 16s linear infinite; }
+  @keyframes spinSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .bounce-soft { animation: bounceSoft 2.6s ease-in-out infinite; }
+  @keyframes bounceSoft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+
+  .drift-zigzag { animation: zigzag 8s ease-in-out infinite; }
+  @keyframes zigzag {
+    0%, 100% { transform: translate(0,0); }
+    25% { transform: translate(16px,-10px); }
+    50% { transform: translate(-6px,-18px); }
+    75% { transform: translate(-16px,-4px); }
+  }
+
+  .underline-grow {
+    display: inline-block;
+    position: relative;
+  }
+  .underline-grow::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 3px;
+    width: 0;
+    background: currentColor;
+    opacity: 0.5;
+    border-radius: 3px;
+  }
+  .card.active .underline-grow::after {
+    animation: growLine 0.8s ease forwards;
+    animation-delay: 0.5s;
+  }
+  @keyframes growLine {
+    to { width: 100%; }
+  }
+
+  .ticket-stub {
+    border: 2px dashed rgba(255,255,255,0.4);
+    border-radius: 14px;
+    padding: 14px 22px;
+    position: relative;
+  }
+
+  .stamp {
+    position: absolute;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(2) rotate(-20deg);
+  }
+  .card.active .stamp {
+    animation: stampDown 0.4s cubic-bezier(.2,.9,.3,1.3) forwards;
+    animation-delay: 0.5s;
+  }
+  @keyframes stampDown {
+    to { opacity: 0.8; transform: scale(1) rotate(-12deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+  <div class="progress-row" id="progressRow"></div>
+
+  <div class="tap-zone left" onclick="prevCard()"></div>
+  <div class="tap-zone right" onclick="nextCard()"></div>
+
+  <div class="deck" id="deck">
+
+    <div class="card theme-1 active" data-index="0">
+      <div class="bg-shapes">
+        <span class="float-a" style="width:120px; height:120px; background:#FAF3E3; top:10%; left:-30px;"></span>
+        <span class="float-b" style="width:80px; height:80px; background:#E8B84B; bottom:18%; right:-20px;"></span>
+        <span class="float-c" style="width:50px; height:50px; background:#FF6B5B; top:55%; left:60%;"></span>
+      </div>
+      <div class="card-content">
+        <svg class="anim-in" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#FAF3E3" stroke-width="1.5" style="margin-bottom:14px;"><path d="M3 8h13v6a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2"/><path d="M6 2c0 1-1 1-1 2s1 1 1 2"/><path d="M11 2c0 1-1 1-1 2s1 1 1 2"/></svg>
+        <div class="eyebrow anim-in">Presenting</div>
+        <div class="quote-text anim-in" style="font-size:42px;">2026<br>Dad Wrapped</div>
+        <div class="sub-note anim-in">Analyzing one full year of premium fatherhood performance metrics.</div>
+      </div>
+      <div class="swipe-hint">tap to begin →</div>
+    </div>
+
+    <div class="card theme-2" data-index="1">
+      <div class="bg-shapes">
+        <span class="float-b" style="width:100px; height:100px; background:#3C2A0A; top:-20px; right:-20px;"></span>
+        <span class="float-d" style="width:60px; height:60px; background:#FAF3E3; bottom:14%; left:-10px;"></span>
+        <span class="steam" style="left:46%; top:30%; height:24px; animation-delay:0s;"></span>
+        <span class="steam" style="left:52%; top:32%; height:20px; animation-delay:1s;"></span>
+        <span class="steam" style="left:49%; top:28%; height:22px; animation-delay:2s;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Top stat</div>
+        <div class="big-number anim-in" data-count="240+">0</div>
+        <div class="stat-label anim-in">flights / work trips survived</div>
+        <div class="sub-note anim-in">Spent more nights in hotels than at home this year. Yet never missed being exactly where it mattered most.</div>
+      </div>
+    </div>
+
+    <div class="card theme-3" data-index="2">
+      <div class="bg-shapes">
+        <span class="float-a" style="width:90px; height:90px; background:#4A1208; top:8%; right:-20px;"></span>
+        <span class="float-c" style="width:46px; height:46px; background:#FAF3E3; bottom:20%; left:10%;"></span>
+      </div>
+      <div class="marquee">
+        <div class="marquee-track">FOCUS ON YOUR STUDIES &nbsp;&nbsp;•&nbsp;&nbsp; WEAR A JACKET &nbsp;&nbsp;•&nbsp;&nbsp; DON'T BLAME &nbsp;&nbsp;•&nbsp;&nbsp; FOCUS ON YOUR STUDIES &nbsp;&nbsp;•&nbsp;&nbsp; WEAR A JACKET &nbsp;&nbsp;•&nbsp;&nbsp; EAT ON TIME &nbsp;&nbsp;•&nbsp;&nbsp;</div>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Lifetime achievement</div>
+        <div class="big-number anim-in" data-count="452">0</div>
+        <div class="stat-label anim-in">life lessons delivered</div>
+        <div class="sub-note anim-in">Roughly 1.2 per day. Retention rate unknown but rising every year.</div>
+      </div>
+    </div>
+
+    <div class="card theme-4" data-index="3">
+      <div class="bg-shapes">
+        <span class="float-b" style="width:110px; height:110px; background:#FAF3E3; bottom:-30px; left:-20px;"></span>
+        <span class="float-c" style="width:50px; height:50px; background:#E8B84B; top:14%; right:6%;"></span>
+      </div>
+      <div class="confetti-layer" id="confetti-3"></div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Streak</div>
+        <div class="big-number anim-in" data-count="100" data-suffix="%">0%</div>
+        <div class="stat-label anim-in">family support rate</div>
+        <div class="sub-note anim-in">Zero missed calls when it mattered. Zero days off this streak.</div>
+      </div>
+    </div>
+
+    <div class="card theme-8" data-index="4">
+      <div class="bg-shapes">
+        <span class="float-a wobble" style="width:70px; height:70px; background:#FAF3E3; top:10%; left:8%;"></span>
+        <span class="float-c" style="width:40px; height:40px; background:#0F2E1F; bottom:18%; right:14%;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Genre breakdown</div>
+        <div class="stat-label anim-in underline-grow" style="font-size:24px; margin-bottom:6px;">Self-Proclaimed Comedian Card</div>
+        <div class="big-number anim-in" data-count="94" data-suffix="%" style="font-size:58px;">0%</div>
+        <div class="sub-note anim-in">Audience response remains divided.
+Primary victim: family members.</div>
+      </div>
+    </div>
+
+    <div class="card theme-9" data-index="5">
+      <div class="bg-shapes">
+        <span class="float-b drift-zigzag" style="width:60px; height:60px; background:#FAF3E3; top:14%; right:10%;"></span>
+        <span class="float-d" style="width:80px; height:80px; background:#3C2A0A; bottom:-20px; left:-20px;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Most requested encore</div>
+        <div class="quote-mark anim-in" style="font-size:36px;">📞</div>
+        <div class="quote-text anim-in" style="font-size:28px;">"Professional<br>Ragebaiting."</div>
+        <div class="sub-note anim-in">Will say controversial things then smile while chaos unfolds.</div>
+      </div>
+    </div>
+
+    <div class="card theme-5" data-index="6">
+      <div class="bg-shapes">
+        <span class="float-a" style="width:80px; height:80px; background:#0F2E1F; top:12%; left:-20px;"></span>
+        <span class="float-d" style="width:60px; height:60px; background:#FF6B5B; bottom:16%; right:-10px;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Bonus metric</div>
+        <div class="big-number anim-in" data-count="1247">0</div>
+        <div class="stat-label anim-in">stock market checks per day</div>
+        <div class="sub-note anim-in">Knows NIFTY movement instantly.
+May or may not check portfolio
+before saying good morning.</div>
+      </div>
+    </div>
+
+    <div class="card theme-10" data-index="7">
+      <div class="bg-shapes">
+        <span class="float-c spin-slow" style="width:90px; height:90px; background:#FAF3E3; top:6%; right:-20px; border-radius:30%;"></span>
+        <span class="float-a bounce-soft" style="width:36px; height:36px; background:#E8B84B; bottom:22%; left:12%;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Top Contribution</div>
+        <div class="big-number anim-in" data-count="2783" style="font-size:64px;">0</div>
+        <div class="stat-label anim-in">career suggestions delivered</div>
+        <div class="sub-note anim-in">IAS officer. CEO. Entrepreneur. Scientist.
+Basically every profession spotted online.</div>
+      </div>
+    </div>
+
+    <div class="card theme-11" data-index="8">
+      <div class="bg-shapes">
+        <span class="float-b" style="width:70px; height:70px; background:#0F2E1F; top:8%; left:6%;"></span>
+        <span class="float-d wobble" style="width:50px; height:50px; background:#FF6B5B; bottom:14%; right:10%;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Special certificate</div>
+        <div class="ticket-stub anim-in" style="margin-top:6px;">
+          <div class="stamp" style="width:64px; height:64px; top:-18px; right:-18px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; letter-spacing:0.5px; text-align:center;">#VERIFIED</div>
+          <div class="quote-text" style="font-size:22px; margin-bottom:4px;">Certified Fashion Risk Taker</div>
+          <div class="sub-note" style="margin-top:0; opacity:0.85;">Successfully combined colors
+no one knew could exist together.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card theme-6" data-index="9">
+      <div class="bg-shapes">
+        <span class="float-b" style="width:100px; height:100px; background:#E8B84B; top:-20px; right:-30px;"></span>
+        <span class="float-c" style="width:40px; height:40px; background:#FF6B5B; bottom:24%; left:14%;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Top phrase of 2026</div>
+        <div class="quote-mark anim-in">"</div>
+        <div class="quote-text anim-in">You should<br>prepare for UPSC.</div>
+        <div class="sub-note anim-in">Campaign running continuously since early childhood.</div>
+      </div>
+    </div>
+
+    <div class="card theme-7" data-index="10">
+      <div class="bg-shapes">
+        <span class="float-a" style="width:90px; height:90px; background:#FAF3E3; bottom:-20px; right:-20px;"></span>
+        <span class="float-d" style="width:50px; height:50px; background:#0F2E1F; top:10%; left:8%;"></span>
+      </div>
+      <div class="card-content">
+        <div class="eyebrow anim-in">Most replayed memory</div>
+        <div class="big-number anim-in" data-count="1" style="font-size:46px;">0</div>
+        <div class="stat-label anim-in">person who shows up, every single time, no questions asked</div>
+        <div class="sub-note anim-in">Listened back-to-back, no skips, for 20+ years straight.</div>
+      </div>
+    </div>
+
+    <div class="card theme-final" data-index="11">
+      <div class="bg-shapes">
+        <span class="float-a" style="width:140px; height:140px; background:#E8B84B; top:-30px; left:-30px;"></span>
+        <span class="float-b" style="width:90px; height:90px; background:#FAF3E3; bottom:-20px; right:-20px;"></span>
+        <span class="float-c" style="width:50px; height:50px; background:#FF6B5B; top:50%; right:8%;"></span>
+      </div>
+      <div class="confetti-layer" id="confetti-final"></div>
+      <div class="card-content">
+        <div class="crown-wrap">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#FAF3E3" stroke-width="1.5"><path d="M2 17l3-9 4 5 3-7 3 7 4-5 3 9z"/><path d="M2 17h20"/></svg>
+        </div>
+        <div class="eyebrow anim-in">Your #1 of 2026</div>
+        <div class="final-title anim-in">#1 Person<br>of My Life</div>
+        <div class="final-sub anim-in">No algorithm needed. Just papa, on repeat, since day one. Happy Father's Day. 🤍</div>
+        <div class="heart-row"><span>🫖</span><span>🏡</span><span>📚</span><span>🤍</span></div>
+      </div>
+      <div class="signature">made with love, by your anmol ratans<br>Shanvi & Gatik</div>
+    </div>
+
+  </div>
+
+  <div class="swipe-hint" id="globalHint" style="display:none;">← tap left or right to navigate →</div>
+</div>
+
+<script>
+  const total = document.querySelectorAll('.card').length;
+  let current = 0;
+  const deck = document.getElementById('deck');
+  const progressRow = document.getElementById('progressRow');
+
+  for (let i = 0; i < total; i++) {
+    const seg = document.createElement('div');
+    seg.className = 'progress-seg';
+    seg.innerHTML = '<div class="progress-fill"></div>';
+    progressRow.appendChild(seg);
+  }
+
+  function animateCounts(cardEl) {
+    const counters = cardEl.querySelectorAll('.big-number[data-count]');
+    counters.forEach(el => {
+      const target = parseInt(el.getAttribute('data-count'), 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      const duration = 1100;
+      const startTime = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = Math.round(target * eased);
+        el.textContent = value.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  const confettiColors = ['#FAF3E3', '#E8B84B', '#FF6B5B', '#9FE1CB', '#FFFFFF'];
+
+  function burstConfetti(layerId, count) {
+    const layer = document.getElementById(layerId);
+    if (!layer) return;
+    layer.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece burst';
+      const size = 6 + Math.random() * 6;
+      const isCircle = Math.random() > 0.5;
+      piece.style.width = size + 'px';
+      piece.style.height = (isCircle ? size : size * 1.6) + 'px';
+      piece.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+      piece.style.borderRadius = isCircle ? '50%' : '2px';
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+      piece.style.setProperty('--spin', (Math.random() * 720 - 360) + 'deg');
+      const duration = 2.4 + Math.random() * 1.6;
+      const delay = Math.random() * 0.5;
+      piece.style.animationDuration = duration + 's';
+      piece.style.animationDelay = delay + 's';
+      layer.appendChild(piece);
+    }
+  }
+
+  function render() {
+    document.querySelectorAll('.card').forEach((c, i) => {
+      const wasActive = c.classList.contains('active');
+      c.classList.toggle('active', i === current);
+      if (i === current && !wasActive) {
+        animateCounts(c);
+        if (c.querySelector('#confetti-3')) burstConfetti('confetti-3', 26);
+        if (c.querySelector('#confetti-final')) burstConfetti('confetti-final', 50);
+      }
+    });
+    document.querySelectorAll('.progress-seg').forEach((seg, i) => {
+      seg.classList.remove('done', 'active');
+      if (i < current) seg.classList.add('done');
+      if (i === current) seg.classList.add('active');
+    });
+  }
+
+  function nextCard() {
+    if (current < total - 1) {
+      current++;
+      render();
+    }
+  }
+
+  function prevCard() {
+    if (current > 0) {
+      current--;
+      render();
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') nextCard();
+    if (e.key === 'ArrowLeft') prevCard();
+  });
+
+  const phone = document.getElementById('phone');
+
+  function applyTilt(clientX, clientY) {
+    const rect = phone.getBoundingClientRect();
+    const x = (clientX - rect.left) / rect.width;
+    const y = (clientY - rect.top) / rect.height;
+    const rotateY = (x - 0.5) * 18;
+    const rotateX = (0.5 - y) * 14;
+    const activeContent = document.querySelector('.card.active .card-content');
+    if (activeContent) {
+      activeContent.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+  }
+
+  function resetTilt() {
+    const activeContent = document.querySelector('.card.active .card-content');
+    if (activeContent) activeContent.style.transform = 'rotateX(0deg) rotateY(0deg)';
+  }
+
+  phone.style.perspective = '900px';
+
+  phone.addEventListener('mousemove', (e) => applyTilt(e.clientX, e.clientY));
+  phone.addEventListener('mouseleave', resetTilt);
+  phone.addEventListener('touchmove', (e) => {
+    if (e.touches[0]) applyTilt(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  phone.addEventListener('touchend', resetTilt);
+
+  render();
+  animateCounts(document.querySelector('.card.active'));
+  const infinityEl = document.querySelector('[data-index="6"] .big-number');
+  if (infinityEl) {
+    infinityEl.style.transition = 'opacity 0.6s ease 0.15s';
+    requestAnimationFrame(() => { infinityEl.style.opacity = '1'; });
+  }
+</script>
+
+</body>
+</html>
